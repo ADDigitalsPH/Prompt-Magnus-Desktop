@@ -1,0 +1,645 @@
+PRODUCT REQUIREMENTS DOCUMENT
+Prompt Magnus Desktop
+
+Version: 1.0
+Product Type: Lightweight Desktop Application
+Primary Platform: Windows-first desktop app
+Future Platform Support: macOS optional after Windows MVP
+Prepared for: Agent Builder / AI Development Agent
+
+
+1. PRODUCT OVERVIEW
+
+Prompt Magnus Desktop is a lightweight desktop prompt launcher that allows users to save reusable prompts and insert them into any active input field on their computer.
+
+The core interaction is simple:
+
+Press Ctrl + Space -> Search prompt -> Press Enter -> Prompt is pasted into the active app/input field.
+
+The app should be useful for developers, AI users, creators, business owners, and anyone who repeatedly uses prompts inside tools like Codex, ChatGPT, Claude, Gemini, Notion, Slack, email clients, browser forms, document editors, and other desktop applications.
+
+This is not a full AI writing app, not a prompt marketplace, and not a complex productivity dashboard. It is a small system-wide utility that runs in the background and helps users reuse prompts faster.
+
+
+2. PRODUCT GOAL
+
+The main goal is to help users save their best prompts once and insert them anywhere on their desktop without manually opening notes, documents, or old chats.
+
+The app must be:
+
+- Lightweight
+- Fast
+- Simple to use
+- Keyboard-first
+- Local-first
+- Private
+- Always accessible
+- Useful even without internet
+- Able to remain active in the background after the main window is closed
+
+
+3. CORE VALUE PROPOSITION
+
+Prompt Magnus Desktop helps users avoid repetitive copy-pasting by turning their saved prompts into a searchable desktop launcher.
+
+Positioning:
+
+"Save your best prompts. Press Ctrl + Space anywhere. Search. Press Enter. Paste instantly."
+
+For users:
+
+- No need to search inside Notion, Google Docs, text files, or old chat history.
+- No need to copy and paste manually every time.
+- No need to memorize long prompts.
+- No need to keep the main app window open.
+- The app stays available from the taskbar/system tray.
+
+
+4. TARGET USERS
+
+Primary users:
+
+- AI power users
+- Non-technical AI builders
+- Developers using tools like Codex
+- Freelancers and service providers
+- Content creators
+- Business owners
+- Students using AI for learning and productivity
+
+Primary use cases:
+
+- Insert coding prompts into Codex or other AI coding tools
+- Insert content prompts into ChatGPT or Claude
+- Save reusable business prompts
+- Save reusable marketing prompts
+- Save reusable debugging prompts
+- Quickly paste structured prompts into forms, editors, and chat boxes
+
+
+5. PRODUCT PRINCIPLES
+
+5.1 Simplicity First
+
+The app should do one job well: save prompts and insert them quickly.
+
+Avoid unnecessary complexity in the MVP.
+
+Do not include:
+
+- AI generation
+- Cloud sync
+- Team collaboration
+- Prompt marketplace
+- Analytics dashboard
+- Automation builder
+- Prompt chain runner
+- Login/account system
+- Subscription billing
+- Browser extension features
+
+5.2 Launcher First
+
+The launcher is the main product experience.
+
+The user should not need to open the full app window often. The full app is mainly for saving, browsing, and editing prompts.
+
+5.3 Local First
+
+All prompt data should be stored locally on the user's device for the MVP.
+
+The app should work offline.
+
+5.4 Background Utility Behavior
+
+The app should behave like a system utility.
+
+When the user clicks the close button on the main window, the app should not fully quit by default. It should minimize to the system tray/taskbar area and continue running in the background.
+
+The user should be able to reopen the app from the system tray/taskbar menu.
+
+5.5 Clipboard-Based Prompt Insertion
+
+The most realistic and compatible insertion method should be:
+
+1. Save current clipboard content temporarily.
+2. Copy selected prompt into clipboard.
+3. Simulate Ctrl + V into the active input field.
+4. Restore previous clipboard content after a short delay.
+
+This keeps the app simple and compatible with most normal desktop input fields.
+
+
+6. MVP SCOPE
+
+The MVP should include only the following features:
+
+6.1 Prompt Library
+
+Users can:
+
+- Create a new prompt
+- Edit an existing prompt
+- Delete a prompt
+- Search prompts
+- Favorite/unfavorite prompts
+- Assign a prompt to a category
+- View prompts as cards in a grid
+- Filter prompts using the sidebar
+
+6.2 Floating Launcher
+
+Users can:
+
+- Open launcher using Ctrl + Space
+- Search saved prompts
+- Navigate results using keyboard
+- Press Enter to paste selected prompt
+- Press Esc to close launcher
+- Use Ctrl + Enter to copy selected prompt without pasting
+
+6.3 Prompt Editor Modal
+
+Users can:
+
+- Open a modal by clicking a prompt card
+- Edit title
+- Edit category
+- Add a custom category
+- Rename an existing category
+- Edit prompt body
+- Mark prompt as favorite
+- Save changes
+- Delete prompt
+- Cancel editing
+
+6.4 Save Prompt From Clipboard
+
+Users can:
+
+- Copy text from anywhere
+- Press Ctrl + Shift + S
+- Open a new prompt modal pre-filled with clipboard text
+- Add title and category
+- Save prompt
+
+6.5 System Tray / Taskbar Behavior
+
+The app must:
+
+- Stay active after the window close button is clicked
+- Continue listening for Ctrl + Space
+- Show an icon in the system tray/taskbar area
+- Allow users to reopen the Prompt Library from the tray menu
+- Allow users to open the launcher from the tray menu
+- Allow users to create a new prompt from the tray menu
+- Allow users to fully quit the app from the tray menu
+
+6.6 Import / Export
+
+Users can:
+
+- Export prompts to JSON
+- Import prompts from JSON
+
+This allows backup and migration without requiring cloud sync.
+
+
+7. OUT OF SCOPE FOR MVP
+
+The following should not be built in Version 1:
+
+- AI prompt improvement
+- Prompt marketplace
+- Prompt sharing
+- Team libraries
+- Cloud sync
+- User login
+- Subscription billing
+- Web dashboard
+- Browser extension integration
+- Full automation workflow builder
+- Prompt chains
+- Complex app-specific automation
+- Usage analytics dashboard
+- Role-based permissions
+
+
+8. USER FLOWS
+
+8.1 Insert Prompt Into Active App
+
+1. User opens any app.
+2. User clicks an input field.
+3. User presses Ctrl + Space.
+4. Prompt Magnus Desktop launcher appears.
+5. User types a search term.
+6. Matching prompts appear.
+7. User selects a prompt.
+8. User presses Enter.
+9. App temporarily copies selected prompt to clipboard.
+10. App simulates Ctrl + V.
+11. Prompt appears in the active input field.
+12. App restores previous clipboard content.
+13. Launcher closes.
+
+8.2 Save New Prompt Manually
+
+1. User opens Prompt Library.
+2. User clicks + New Prompt.
+3. New Prompt modal appears.
+4. User enters title.
+5. User selects category.
+6. User enters prompt body.
+7. User optionally marks as favorite.
+8. User clicks Save.
+9. Prompt appears as a card in the grid.
+
+8.3 Edit Prompt
+
+1. User opens Prompt Library.
+2. User clicks a prompt card.
+3. Edit Prompt modal appears.
+4. User edits prompt details.
+5. User clicks Save.
+6. Prompt card updates.
+
+8.4 Save Prompt From Clipboard
+
+1. User copies prompt text from anywhere.
+2. User presses Ctrl + Shift + S.
+3. New Prompt modal appears.
+4. Prompt body is pre-filled from clipboard.
+5. User adds title and category.
+6. User clicks Save.
+7. Prompt is added to the library.
+
+8.5 Close Window But Keep App Running
+
+1. User clicks the X close button on the main window.
+2. Main window closes or hides.
+3. App remains active in the system tray/taskbar.
+4. Ctrl + Space still opens the launcher.
+5. User can right-click tray icon and reopen the Prompt Library.
+
+
+9. KEYBOARD SHORTCUTS
+
+Default shortcuts:
+
+- Ctrl + Space: Open launcher
+- Ctrl + Shift + S: Save prompt from clipboard
+- Ctrl + N: New prompt when app window is focused
+- Enter: Paste selected prompt in launcher
+- Ctrl + Enter: Copy selected prompt only
+- Esc: Close launcher or modal
+- Arrow Up/Down: Navigate launcher results
+
+The user should eventually be able to customize shortcuts in Settings, but customization can be a later enhancement if needed.
+
+
+10. UI STRUCTURE
+
+10.1 Main Prompt Library Window
+
+The main window must have:
+
+- Desktop app window frame
+- Left sidebar
+- Main content area
+- Search field
+- + New Prompt button
+- Prompt grid
+- Prompt cards
+
+There should be no permanent editor panel on the right.
+
+The prompt editor should appear only as a modal popup.
+
+10.2 Sidebar Items
+
+Default sidebar:
+
+- All Prompts
+- Favorites
+- Coding
+- Writing
+- Marketing
+- Business
+- Personal
+- Settings
+
+10.3 Main Area
+
+Top bar:
+
+- Search prompts input
+- + New Prompt button
+
+Content area:
+
+- Grid of prompt cards
+
+10.4 Prompt Card
+
+Each card should show:
+
+- Prompt title
+- Category label
+- Short preview
+- Favorite star icon
+
+Clicking a card opens the Edit Prompt modal.
+
+10.5 Prompt Editor Modal
+
+The modal should include:
+
+- Title field
+- Category dropdown
+- Category add/rename controls
+- Prompt textarea
+- Favorite toggle/checkbox
+- Delete button
+- Cancel button
+- Save button
+
+10.6 Floating Launcher
+
+The launcher should include:
+
+- Search field
+- Prompt results list
+- Category labels
+- Keyboard hints:
+  - Enter = Paste
+  - Esc = Close
+
+10.7 Tray Menu
+
+Tray menu should include:
+
+- Open Prompt Library
+- Open Launcher
+- New Prompt
+- Quit
+
+
+11. DATA MODEL
+
+11.1 Prompt
+
+Fields:
+
+- id: string
+- title: string
+- body: string
+- categoryId: string
+- isFavorite: boolean
+- createdAt: datetime
+- updatedAt: datetime
+
+11.2 Category
+
+Fields:
+
+- id: string
+- name: string
+- icon: string optional
+- color: string optional
+- sortOrder: number
+
+11.3 Settings
+
+Fields:
+
+- launcherShortcut: string
+- saveFromClipboardShortcut: string
+- startOnStartup: boolean
+- closeToTray: boolean
+- theme: string
+- restoreClipboardAfterPaste: boolean
+
+
+12. RECOMMENDED TECH STACK
+
+Recommended stack:
+
+- Desktop framework: Tauri
+- Frontend: React + TypeScript
+- Styling: Tailwind CSS
+- Local storage: SQLite
+- Global shortcuts: Tauri global shortcut plugin
+- Clipboard access: Tauri clipboard plugin
+- System tray: Tauri tray functionality
+- Packaging: Tauri installer
+
+Rationale:
+
+Tauri is suitable because the app should be lightweight, local-first, and able to run as a background desktop utility. It is generally more lightweight than Electron and suitable for small desktop tools.
+
+
+13. PROMPT INSERTION METHOD
+
+The app should use clipboard-based insertion.
+
+Process:
+
+1. Detect selected prompt.
+2. Store current clipboard content in memory.
+3. Set clipboard content to prompt body.
+4. Simulate paste command:
+   - Windows: Ctrl + V
+   - macOS future support: Cmd + V
+5. Wait briefly.
+6. Restore previous clipboard content.
+7. Close launcher.
+
+Important:
+
+- The app should avoid permanently replacing the user's clipboard.
+- If clipboard restoration fails, the app should not crash.
+- If paste fails, the app may show a small error message.
+
+
+14. SYSTEM TRAY BEHAVIOR
+
+The app should behave as follows:
+
+- On app startup, initialize tray icon.
+- On window close, hide the window instead of quitting.
+- Keep background process alive.
+- Keep global shortcuts active.
+- Tray menu should allow the user to reopen the main window.
+- Tray menu should allow the user to quit the app completely.
+
+Close button behavior:
+
+Default behavior:
+
+Clicking X = hide to tray, not quit.
+
+Optional later setting:
+
+"Quit app when closing main window" can be added later, but not required for MVP.
+
+
+15. SETTINGS
+
+MVP Settings should include:
+
+- Launcher shortcut
+- Save prompt from clipboard shortcut
+- Start on startup
+- Close to tray
+- Theme: dark / light / system
+- Import prompts
+- Export prompts
+
+Default settings:
+
+- Launcher shortcut: Ctrl + Space
+- Save from clipboard: Ctrl + Shift + S
+- Start on startup: false
+- Close to tray: true
+- Theme: dark
+- Restore clipboard after paste: true
+
+
+16. DEFAULT CATEGORIES
+
+The app should ship with these categories:
+
+- Coding
+- Writing
+- Marketing
+- Business
+- Personal
+
+Users can add and rename categories from the prompt editor. The app should allow up to 10 total categories.
+
+
+17. DEFAULT STARTER PROMPTS
+
+Include a small starter pack to make the app useful immediately.
+
+Example prompts:
+
+1. Refactor Code Safely
+Category: Coding
+Prompt:
+Refactor the following code to improve readability, performance, and maintainability without changing its behavior. Follow best practices, use meaningful names, and add comments only where helpful.
+
+2. Fix UI Bug
+Category: Coding
+Prompt:
+There is a UI bug in the following component. Identify the likely cause, explain the issue clearly, and provide the safest fix without introducing unnecessary changes.
+
+3. Explain Error
+Category: Coding
+Prompt:
+Explain the following error in simple terms. Identify the root cause, describe why it happens, and suggest the safest step-by-step fix.
+
+4. Improve Prompt
+Category: Writing
+Prompt:
+Improve the following prompt to make it clearer, more specific, and more likely to produce a useful result. Keep the intent the same but improve structure and wording.
+
+5. Create PRD
+Category: Business
+Prompt:
+Create a clear Product Requirements Document for the following product idea. Include the target user, problem, goals, features, user flows, data model, technical requirements, and MVP scope.
+
+6. Landing Page Section
+Category: Marketing
+Prompt:
+Write a high-converting landing page section for the following offer. Make the copy clear, benefit-driven, specific, and easy to understand.
+
+7. Commit Message
+Category: Coding
+Prompt:
+Write a clear and concise git commit message for the following changes. Use a professional format and summarize the change accurately.
+
+8. Sales Post
+Category: Marketing
+Prompt:
+Write a persuasive social media sales post for the following product. Make it direct, benefit-driven, and include a clear call to action.
+
+
+18. ACCEPTANCE CRITERIA
+
+18.1 Prompt Library
+
+- User can create a prompt.
+- User can edit a prompt.
+- User can delete a prompt.
+- User can mark a prompt as favorite.
+- User can add a custom category.
+- User can rename a category.
+- App prevents users from creating more than 10 total categories.
+- User can filter by category.
+- User can search prompts.
+- Prompts display as cards in a grid.
+
+18.2 Launcher
+
+- Ctrl + Space opens launcher.
+- Launcher appears above the active desktop context.
+- User can search prompts.
+- Arrow keys navigate results.
+- Enter pastes selected prompt into active input field.
+- Esc closes launcher.
+- Launcher closes after successful paste.
+
+18.3 Clipboard Behavior
+
+- App saves previous clipboard content.
+- App pastes selected prompt using clipboard.
+- App restores previous clipboard content after paste.
+- App does not permanently overwrite clipboard during normal use.
+
+18.4 Tray Behavior
+
+- Clicking close button hides main window.
+- App remains active in background.
+- Tray icon remains visible.
+- User can reopen Prompt Library from tray.
+- User can fully quit from tray.
+- Ctrl + Space still works after main window is closed.
+
+18.5 Import/Export
+
+- User can export prompts to JSON.
+- User can import prompts from JSON.
+- Imported prompts appear in the library.
+
+
+19. SUCCESS METRICS
+
+For MVP validation:
+
+- User can insert a prompt into Codex within 3 seconds.
+- User can save a new prompt in under 30 seconds.
+- User can find saved prompts without opening notes or documents.
+- App remains stable while running in background.
+- App does not noticeably slow down the computer.
+- App works offline.
+
+
+20. FINAL MVP SUMMARY
+
+Prompt Magnus Desktop is a lightweight desktop application for saving, searching, and inserting reusable prompts anywhere on the computer.
+
+The MVP should focus on:
+
+- Prompt cards
+- Sidebar categories
+- Search
+- Prompt editor modal
+- Ctrl + Space launcher
+- Clipboard-based paste insertion
+- Clipboard restoration
+- System tray background behavior
+- JSON import/export
+
+The app should stay simple, fast, local, and useful.
