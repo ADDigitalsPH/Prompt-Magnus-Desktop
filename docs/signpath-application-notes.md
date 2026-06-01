@@ -5,12 +5,12 @@ Use these notes when applying for SignPath Foundation open-source code signing.
 ## Project Information
 
 - Project name: Prompt Magnus Desktop
-- Repository URL: TODO: public repository URL
-- Project website: TODO: project website or repository homepage
-- Release URL: TODO: GitHub releases URL
+- Repository URL: https://github.com/ADDigitalsPH/Prompt-Magnus-Desktop
+- Project website: https://github.com/ADDigitalsPH/Prompt-Magnus-Desktop
+- Release URL: https://github.com/ADDigitalsPH/Prompt-Magnus-Desktop/releases/tag/v0.1.0
 - License: MIT
 - Maintainer: Arvin Del Rosario
-- Contact email: TODO: maintainer contact email
+- Contact email: arvinsdelrosario@gmail.com
 
 ## App Description
 

@@ -2,6 +2,8 @@
 
 Prompt Magnus Desktop plans to use SignPath Foundation for free open-source code signing if the project is approved.
 
+Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+
 Free code signing through SignPath Foundation is intended only for open-source projects. Prompt Magnus Desktop must remain publicly available under an open-source license for this route.
 
 ## Signing Provider
@@ -9,6 +11,23 @@ Free code signing through SignPath Foundation is intended only for open-source p
 The intended signing provider is SignPath.io through SignPath Foundation.
 
 Depending on the SignPath Foundation process, the final Windows publisher shown by the operating system may appear as SignPath Foundation.
+
+## Team Roles
+
+Current project roles for the MVP:
+
+- Committer and reviewer: Arvin Del Rosario
+- Signing approver: Arvin Del Rosario
+
+Only official release artifacts built from the public repository through GitHub Actions should be submitted for signing approval.
+
+## Privacy Policy
+
+Prompt Magnus Desktop stores prompts, categories, and settings locally on the user's device for the MVP.
+
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+
+See [../PRIVACY.md](../PRIVACY.md).
 
 ## What Gets Signed
 

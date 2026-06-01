@@ -142,6 +142,8 @@ Common Windows artifacts may include `.msi`, `.exe`, or other Tauri bundle outpu
 
 Prompt Magnus Desktop is being prepared for SignPath Foundation's free open-source code signing process.
 
+Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+
 See [docs/code-signing.md](docs/code-signing.md).
 
 ## Release Process
