@@ -5,11 +5,22 @@
   "windows": ["main", "launcher"],
   "permissions": [
     "core:default",
+    "core:window:allow-hide",
+    "core:window:allow-minimize",
+    "core:window:allow-start-dragging",
+    "core:window:allow-toggle-maximize",
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-write-text",
     "dialog:default",
+    "fs:allow-mkdir",
+    "fs:allow-read-dir",
     "fs:allow-read-text-file",
+    "fs:allow-remove",
     "fs:allow-write-text-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA/prompt-backups/**" }]
+    },
     "global-shortcut:allow-register",
     "global-shortcut:allow-unregister-all"
   ]

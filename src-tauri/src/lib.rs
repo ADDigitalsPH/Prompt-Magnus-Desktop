@@ -43,6 +43,44 @@ fn close_launcher(app: tauri::AppHandle) {
     }
 }
 
+#[tauri::command]
+fn drag_main_window(app: tauri::AppHandle) -> Result<(), String> {
+    let window = app
+        .get_webview_window("main")
+        .ok_or_else(|| "Main window was not found.".to_string())?;
+
+    window.start_dragging().map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+fn hide_main_window(app: tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.hide();
+    }
+}
+
+#[tauri::command]
+fn minimize_main_window(app: tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.minimize();
+    }
+}
+
+#[tauri::command]
+fn toggle_main_window_maximize(app: tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        match window.is_maximized() {
+            Ok(true) => {
+                let _ = window.unmaximize();
+            }
+            Ok(false) => {
+                let _ = window.maximize();
+            }
+            Err(_) => {}
+        }
+    }
+}
+
 #[cfg(windows)]
 fn platform_paste() -> Result<(), String> {
     use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
@@ -302,9 +340,13 @@ pub fn run() {
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             close_launcher,
+            drag_main_window,
+            hide_main_window,
+            minimize_main_window,
             open_new_prompt,
             paste_prompt,
-            simulate_paste
+            simulate_paste,
+            toggle_main_window_maximize
         ])
         .setup(|app| {
             let open = MenuItem::with_id(app, "open", "Open Prompt Library", true, None::<&str>)?;

@@ -1,40 +1,119 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Code2, Search } from "lucide-react";
-import type { Category, Prompt } from "../types/domain";
+import { Code2, Search, Variable } from "lucide-react";
+import type { Category, Prompt, PromptPack } from "../types/domain";
+import {
+  applyPromptVariables,
+  extractPromptVariables,
+  formatVariableName,
+  type PromptVariableValues
+} from "../utils/promptVariables";
+import {
+  getLauncherModeLabel,
+  getLauncherModePrompts,
+  type LauncherMode
+} from "../utils/launcherModes";
 
 type LauncherOverlayProps = {
   categories: Category[];
+  packs: PromptPack[];
   prompts: Prompt[];
   onClose: () => void;
   onCopy: (prompt: Prompt) => Promise<void>;
   onPaste: (prompt: Prompt) => Promise<void>;
+  onUsePrompt: (id: string) => void;
   onCreatePrompt: () => void;
 };
 
-export function LauncherOverlay({ categories, prompts, onClose, onCopy, onPaste, onCreatePrompt }: LauncherOverlayProps) {
+export function LauncherOverlay({
+  categories,
+  packs,
+  prompts,
+  onClose,
+  onCopy,
+  onPaste,
+  onUsePrompt,
+  onCreatePrompt
+}: LauncherOverlayProps) {
   const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<LauncherMode>("all");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [variablePrompt, setVariablePrompt] = useState<Prompt | null>(null);
+  const [variableCopyOnly, setVariableCopyOnly] = useState(false);
+  const [variableValues, setVariableValues] = useState<PromptVariableValues>({});
   const inputRef = useRef<HTMLInputElement>(null);
+  const variableInputRef = useRef<HTMLInputElement>(null);
 
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    const filtered = normalized
-      ? prompts.filter((prompt) => {
+    const modePrompts = getLauncherModePrompts(prompts, mode);
+    return normalized
+      ? modePrompts.filter((prompt) => {
           const category = categories.find((item) => item.id === prompt.categoryId)?.name || "";
-          return `${prompt.title} ${prompt.body} ${category}`.toLowerCase().includes(normalized);
+          const packNames = prompt.packIds
+            .map((packId) => packs.find((pack) => pack.id === packId)?.name || "")
+            .join(" ");
+          return `${prompt.title} ${prompt.body} ${category} ${packNames}`.toLowerCase().includes(normalized);
         })
-      : prompts;
+      : modePrompts;
+  }, [categories, mode, packs, prompts, query]);
 
-    return filtered;
-  }, [categories, prompts, query]);
+  const modes = useMemo(
+    () => [
+      "all" as const,
+      "favorites" as const,
+      "recent" as const,
+      "most-used" as const,
+      ...packs.filter((pack) => pack.isEnabled).map((pack) => `pack:${pack.id}` as const),
+      ...categories.map((category) => `category:${category.id}` as const)
+    ],
+    [categories, packs]
+  );
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
+    function resetLauncher() {
+      setQuery("");
+      setMode("all");
+      setSelectedIndex(0);
+      setVariablePrompt(null);
+      setVariableValues({});
+      inputRef.current?.focus();
+    }
+
+    window.addEventListener("focus", resetLauncher);
+    return () => window.removeEventListener("focus", resetLauncher);
+  }, []);
+
+  useEffect(() => {
+    if (variablePrompt) {
+      variableInputRef.current?.focus();
+    }
+  }, [variablePrompt]);
+
+  useEffect(() => {
     setSelectedIndex(0);
-  }, [query]);
+  }, [mode, query]);
+
+  const startPromptAction = useCallback(async (prompt: Prompt, copyOnly: boolean) => {
+    const variables = extractPromptVariables(prompt.body);
+    if (variables.length) {
+      setVariablePrompt(prompt);
+      setVariableCopyOnly(copyOnly);
+      setVariableValues(Object.fromEntries(variables.map((name) => [name, ""])));
+      return;
+    }
+
+    if (copyOnly) {
+      await onCopy(prompt);
+    } else {
+      await onPaste(prompt);
+      onUsePrompt(prompt.id);
+    }
+    onClose();
+  }, [onClose, onCopy, onPaste, onUsePrompt]);
 
   const runSelected = useCallback(async (copyOnly: boolean) => {
     const prompt = results[selectedIndex];
@@ -43,19 +122,41 @@ export function LauncherOverlay({ categories, prompts, onClose, onCopy, onPaste,
       return;
     }
 
-    if (copyOnly) {
-      await onCopy(prompt);
+    await startPromptAction(prompt, copyOnly);
+  }, [onCreatePrompt, results, selectedIndex, startPromptAction]);
+
+  const submitVariables = useCallback(async () => {
+    if (!variablePrompt) {
+      return;
+    }
+
+    const resolvedPrompt = {
+      ...variablePrompt,
+      body: applyPromptVariables(variablePrompt.body, variableValues)
+    };
+
+    if (variableCopyOnly) {
+      await onCopy(resolvedPrompt);
     } else {
-      await onPaste(prompt);
+      await onPaste(resolvedPrompt);
+      onUsePrompt(variablePrompt.id);
     }
     onClose();
-  }, [onClose, onCopy, onCreatePrompt, onPaste, results, selectedIndex]);
+  }, [onClose, onCopy, onPaste, onUsePrompt, variableCopyOnly, variablePrompt, variableValues]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
+        if (variablePrompt) {
+          setVariablePrompt(null);
+          inputRef.current?.focus();
+          return;
+        }
         onClose();
+      }
+      if (variablePrompt) {
+        return;
       }
       if (event.key === "ArrowDown") {
         event.preventDefault();
@@ -73,7 +174,9 @@ export function LauncherOverlay({ categories, prompts, onClose, onCopy, onPaste,
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose, results.length, runSelected]);
+  }, [onClose, results.length, runSelected, variablePrompt]);
+
+  const variableNames = variablePrompt ? extractPromptVariables(variablePrompt.body) : [];
 
   return (
     <div className="launcher-backdrop">
@@ -94,36 +197,109 @@ export function LauncherOverlay({ categories, prompts, onClose, onCopy, onPaste,
           <kbd>Ctrl + Space</kbd>
         </label>
 
-        <div className="launcher-results">
-          <span className="result-label">Top Results</span>
-          {results.length ? (
-            results.map((prompt, index) => {
-              const category = categories.find((item) => item.id === prompt.categoryId);
-              return (
-                <button
-                  className={index === selectedIndex ? "launcher-result active" : "launcher-result"}
-                  key={prompt.id}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                  onClick={() => void onPaste(prompt).then(onClose)}
-                  type="button"
-                >
-                  <Code2 size={18} />
-                  <span>{prompt.title}</span>
-                  <em style={{ color: category?.color }}>{category?.name}</em>
-                </button>
-              );
-            })
-          ) : (
-            <button className="launcher-empty" onClick={onCreatePrompt} type="button">
-              No prompts found. Create new prompt.
-            </button>
-          )}
-        </div>
+        {!variablePrompt ? (
+          <div className="launcher-modes" aria-label="Launcher modes">
+            {modes.map((item) => (
+              <button
+                className={item === mode ? "launcher-mode active" : "launcher-mode"}
+                key={item}
+                onClick={() => setMode(item)}
+                type="button"
+              >
+                {getLauncherModeLabel(item, categories, packs)}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {variablePrompt ? (
+          <form
+            className="launcher-variables"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void submitVariables();
+            }}
+          >
+            <div className="variable-form-header">
+              <span className="result-label">Variables</span>
+              <strong>{variablePrompt.title}</strong>
+            </div>
+
+            <div className="variable-fields">
+              {variableNames.map((name, index) => (
+                <label className="variable-field" key={name}>
+                  <span>{formatVariableName(name)}</span>
+                  <input
+                    ref={index === 0 ? variableInputRef : undefined}
+                    value={variableValues[name] || ""}
+                    onChange={(event) =>
+                      setVariableValues((current) => ({ ...current, [name]: event.target.value }))
+                    }
+                    placeholder={`{${name}}`}
+                  />
+                </label>
+              ))}
+            </div>
+
+            <div className="variable-actions">
+              <button
+                className="secondary-button compact-button"
+                onClick={() => {
+                  setVariablePrompt(null);
+                  inputRef.current?.focus();
+                }}
+                type="button"
+              >
+                Back
+              </button>
+              <button className="primary-button compact-button" type="submit">
+                {variableCopyOnly ? "Copy" : "Paste"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="launcher-results">
+            <span className="result-label">{getLauncherModeLabel(mode, categories, packs)}</span>
+            {results.length ? (
+              results.map((prompt, index) => {
+                const category = categories.find((item) => item.id === prompt.categoryId);
+                const hasVariables = extractPromptVariables(prompt.body).length > 0;
+                return (
+                  <button
+                    className={index === selectedIndex ? "launcher-result active" : "launcher-result"}
+                    key={prompt.id}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    onClick={() => void startPromptAction(prompt, false)}
+                    type="button"
+                  >
+                    <Code2 size={18} />
+                    <span>{prompt.title}</span>
+                    {hasVariables ? <Variable className="result-variable-icon" size={14} /> : null}
+                    <em style={{ color: category?.color }}>{category?.name}</em>
+                  </button>
+                );
+              })
+            ) : (
+              <button className="launcher-empty" onClick={onCreatePrompt} type="button">
+                {query.trim() ? "No prompts found. Create new prompt." : "No prompts in this mode."}
+              </button>
+            )}
+          </div>
+        )}
 
         <footer className="launcher-footer">
-          <span><kbd>Enter</kbd> Paste</span>
-          <span><kbd>Ctrl Enter</kbd> Copy</span>
-          <span><kbd>Esc</kbd> Close</span>
+          {variablePrompt ? (
+            <>
+              <span><kbd>Enter</kbd> {variableCopyOnly ? "Copy" : "Paste"}</span>
+              <span><kbd>Esc</kbd> Back</span>
+            </>
+          ) : (
+            <>
+              <span><kbd>Enter</kbd> Paste</span>
+              <span><kbd>Ctrl Enter</kbd> Copy</span>
+              <span><kbd>Esc</kbd> Close</span>
+            </>
+          )}
         </footer>
       </section>
     </div>

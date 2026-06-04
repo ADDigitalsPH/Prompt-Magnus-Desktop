@@ -17,6 +17,42 @@ export async function hideCurrentWindow() {
   await invoke("close_launcher");
 }
 
+export async function hideMainWindow() {
+  if (!isTauri) {
+    return;
+  }
+
+  const { invoke } = await import("@tauri-apps/api/core");
+  await invoke("hide_main_window");
+}
+
+export async function minimizeMainWindow() {
+  if (!isTauri) {
+    return;
+  }
+
+  const { invoke } = await import("@tauri-apps/api/core");
+  await invoke("minimize_main_window");
+}
+
+export async function toggleMaximizeMainWindow() {
+  if (!isTauri) {
+    return;
+  }
+
+  const { invoke } = await import("@tauri-apps/api/core");
+  await invoke("toggle_main_window_maximize");
+}
+
+export async function dragMainWindow() {
+  if (!isTauri) {
+    return;
+  }
+
+  const { invoke } = await import("@tauri-apps/api/core");
+  await invoke("drag_main_window");
+}
+
 export async function openPromptLibraryNewPrompt() {
   if (!isTauri) {
     return;

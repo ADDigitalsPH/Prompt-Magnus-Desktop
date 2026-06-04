@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   Code2,
   Megaphone,
+  Package,
   PenLine,
   Search,
   Settings,
@@ -28,6 +29,7 @@ export const categoryIcons: Record<string, React.ComponentType<{ size?: number }
 export const utilityIcons = {
   all: BookOpen,
   favorites: Star,
+  packs: Package,
   search: Search,
   settings: Settings
 };

@@ -1,33 +1,39 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Plus, Trash2, X } from "lucide-react";
-import type { Category, Prompt } from "../types/domain";
+import type { Category, Prompt, PromptPack } from "../types/domain";
+import { maxPromptPacks } from "../utils/promptPacks";
 
 type Draft = {
   id?: string;
   title: string;
   categoryId: string;
+  packIds: string[];
   body: string;
   isFavorite: boolean;
 };
 
 type PromptEditorModalProps = {
   categories: Category[];
+  packs: PromptPack[];
   prompt?: Prompt;
   initialBody?: string;
   onClose: () => void;
   onDelete: (id: string) => void;
   onCreateCategory: (name: string) => { ok: true; category: Category } | { ok: false; reason: string };
+  onCreatePack: (name: string) => { ok: true; pack: PromptPack } | { ok: false; reason: string };
   onRenameCategory: (id: string, name: string) => { ok: true } | { ok: false; reason: string };
   onSave: (prompt: Partial<Prompt>) => { ok: true } | { ok: false; reason: string };
 };
 
 export function PromptEditorModal({
   categories,
+  packs,
   prompt,
   initialBody,
   onClose,
   onDelete,
   onCreateCategory,
+  onCreatePack,
   onRenameCategory,
   onSave
 }: PromptEditorModalProps) {
@@ -36,10 +42,12 @@ export function PromptEditorModal({
     id: prompt?.id,
     title: prompt?.title || "",
     categoryId: initialCategoryId,
+    packIds: prompt?.packIds || [],
     body: prompt?.body || initialBody || "",
     isFavorite: prompt?.isFavorite || false
   });
   const [categoryName, setCategoryName] = useState("");
+  const [packName, setPackName] = useState("");
   const [error, setError] = useState("");
 
   const original = useMemo(() => JSON.stringify(draft), []);
@@ -99,6 +107,30 @@ export function PromptEditorModal({
 
     setCategoryName("");
     setError("");
+  }
+
+  function handleCreatePack() {
+    const result = onCreatePack(packName);
+    if (!result.ok) {
+      setError(result.reason);
+      return;
+    }
+
+    setDraft((current) => ({
+      ...current,
+      packIds: current.packIds.includes(result.pack.id) ? current.packIds : [...current.packIds, result.pack.id]
+    }));
+    setPackName("");
+    setError("");
+  }
+
+  function togglePack(packId: string) {
+    setDraft((current) => ({
+      ...current,
+      packIds: current.packIds.includes(packId)
+        ? current.packIds.filter((id) => id !== packId)
+        : [...current.packIds, packId]
+    }));
   }
 
   function handleDelete() {
@@ -161,6 +193,42 @@ export function PromptEditorModal({
           </div>
         </div>
         <small className="category-limit">{categories.length} / 10 categories</small>
+
+        <div className="pack-assignment">
+          <div className="pack-assignment-header">
+            <span>Prompt packs</span>
+            <small>{packs.length} / {maxPromptPacks} packs</small>
+          </div>
+
+          {packs.length ? (
+            <div className="pack-chip-list" aria-label="Prompt packs">
+              {packs.map((pack) => (
+                <label className="pack-check" key={pack.id}>
+                  <input
+                    checked={draft.packIds.includes(pack.id)}
+                    onChange={() => togglePack(pack.id)}
+                    type="checkbox"
+                  />
+                  <span style={{ "--pack-color": pack.color } as CSSProperties}>{pack.name}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <small className="pack-empty">No packs yet.</small>
+          )}
+
+          <div className="pack-create-row">
+            <input
+              value={packName}
+              onChange={(event) => setPackName(event.target.value)}
+              placeholder="New pack name"
+            />
+            <button className="secondary-button compact-button" onClick={handleCreatePack} type="button">
+              <Plus size={16} />
+              Add
+            </button>
+          </div>
+        </div>
 
         <label className="field">
           <span>Prompt</span>

@@ -1,6 +1,6 @@
 {
   "name": "prompt-magnus-desktop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A local-first Windows desktop prompt launcher.",
   "author": "Arvin Del Rosario",
   "license": "MIT",
@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "node scripts/test-local-backup-policy.mjs && node scripts/test-prompt-sorting.mjs && node scripts/test-launcher-modes.mjs && node scripts/test-prompt-density.mjs && node scripts/test-prompt-packs.mjs && node scripts/test-workspaces.mjs && node scripts/test-backup-formats.mjs",
     "tauri": "tauri"
   },
   "dependencies": {
